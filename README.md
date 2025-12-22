@@ -1,2 +1,2 @@
 # iiwa-safety
- For IIWA safe reachability
+ For IIWA safe reachability.
