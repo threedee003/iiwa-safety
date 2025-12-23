@@ -171,30 +171,30 @@ class SDFVolume:
             v = v[valid].float()
             z = z[valid]
 
-            # ---- camera frame ----
+ 
             x = (u - cx) * z / fx
             y = (v - cy) * z / fy
 
             pc_cam = torch.stack(
                   [x, y, z, torch.ones_like(z)],
                   dim=1
-            )  # [N,4]
+            )  
 
-            # ---- world frame ----
+        
             pc_world = (T_cw @ pc_cam.T).T[:, :3]
 
-            # ---- voxel indices ----
+           
             idx = self.world2grid(pc_world)
             i, j, k = idx[:, 0], idx[:, 1], idx[:, 2]
 
-            # ---- voxel centers ----
+        
             centers = torch.stack([
                   self.x_min + (i.float() + 0.5) * self.voxel_size,
                   self.y_min + (j.float() + 0.5) * self.voxel_size,
                   self.z_min + (k.float() + 0.5) * self.voxel_size,
             ], dim=1)
 
-            # ---- signed distance along ray ----
+        
             cam_origin = T_cw[:3, 3]
 
             ray_dir = pc_world - cam_origin
@@ -208,7 +208,7 @@ class SDFVolume:
             mu = 3.0 * self.voxel_size
             phi = torch.clamp(sdf / mu, -1.0, 1.0)
 
-            # ---- TSDF fusion ----
+
             w_old = self.weight[i, j, k]
             t_old = self.tsdf[i, j, k]
 
@@ -250,7 +250,7 @@ class SDFVolume:
 
 
       def query(self, points):
-            if points.dtype == 'np.ndarray':
+            if not isinstance(points, torch.Tensor):
                   points = torch.from_numpy(points)
             p = points.to(self.device)
             idx =  self.world2grid(p)
