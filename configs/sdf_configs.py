@@ -21,7 +21,7 @@ class CameraConfigs:
 
 
 class SDFConfig:
-      class shelf_env:
+      class testbed:
             voxel_size = 0.02
             x_min = -1.3 
             x_max =  1.3

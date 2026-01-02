@@ -2,7 +2,8 @@
 from configs.asset_config import AssetConfig
 from configs.camera_configs import CameraConfig
 from workspace.iiwa_ws import iiwaScene
-from sdf.sdf_generator import SDFVolume
+# from sdf.sdf_generator import SDFVolume
+from sdf.sdf_gen import SDFVolume
 
 
 from scipy.spatial.transform import Rotation as R
@@ -68,8 +69,11 @@ class iiwaTestBed(iiwaScene):
 
 
       def get_segmentation_map(self, camera_handle):
+            '''
+            Robot is 1, World is 0
+            '''
             seg_map = self.gym.get_camera_image(self.sim, self.env, camera_handle, gymapi.IMAGE_SEGMENTATION)
-            return seg_map > 0
+            return seg_map
 
 
 

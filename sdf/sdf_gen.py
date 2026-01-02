@@ -19,19 +19,19 @@ class SDFVolume:
             self.cam_cfg = CameraConfig()
             self.resolution = resolution
             self.K = K_cam
-            self.voxel_size = self.sdf_cfg.shelf_env.voxel_size
-            self.x_min = self.sdf_cfg.shelf_env.x_min
-            self.x_max = self.sdf_cfg.shelf_env.x_max
-            self.y_min = self.sdf_cfg.shelf_env.y_min
-            self.y_max = self.sdf_cfg.shelf_env.y_max
-            self.z_min = self.sdf_cfg.shelf_env.z_min
-            self.z_max = self.sdf_cfg.shelf_env.z_max
+            self.voxel_size = self.sdf_cfg.testbed.voxel_size
+            self.x_min = self.sdf_cfg.testbed.x_min
+            self.x_max = self.sdf_cfg.testbed.x_max
+            self.y_min = self.sdf_cfg.testbed.y_min
+            self.y_max = self.sdf_cfg.testbed.y_max
+            self.z_min = self.sdf_cfg.testbed.z_min
+            self.z_max = self.sdf_cfg.testbed.z_max
             
-            self.Nx = self.sdf_cfg.shelf_env.Nx
-            self.Ny = self.sdf_cfg.shelf_env.Ny
-            self.Nz = self.sdf_cfg.shelf_env.Nz
+            self.Nx = self.sdf_cfg.testbed.Nx
+            self.Ny = self.sdf_cfg.testbed.Ny
+            self.Nz = self.sdf_cfg.testbed.Nz
             self.num_voxels = self.Nx * self.Ny * self.Nz
-            self.device = self.sdf_cfg.shelf_env.device
+            self.device = self.sdf_cfg.testbed.device
 
             self.tsdf = torch.ones((self.Nx, self.Ny, self.Nz), device = self.device)
             self.weight = torch.zeros_like(self.tsdf).to(self.device)
@@ -171,30 +171,30 @@ class SDFVolume:
             v = v[valid].float()
             z = z[valid]
 
- 
+            # ---- camera frame ----
             x = (u - cx) * z / fx
             y = (v - cy) * z / fy
 
             pc_cam = torch.stack(
                   [x, y, z, torch.ones_like(z)],
                   dim=1
-            )  
+            )  # [N,4]
 
-        
+            # ---- world frame ----
             pc_world = (T_cw @ pc_cam.T).T[:, :3]
 
-           
+            # ---- voxel indices ----
             idx = self.world2grid(pc_world)
             i, j, k = idx[:, 0], idx[:, 1], idx[:, 2]
 
-        
+            # ---- voxel centers ----
             centers = torch.stack([
                   self.x_min + (i.float() + 0.5) * self.voxel_size,
                   self.y_min + (j.float() + 0.5) * self.voxel_size,
                   self.z_min + (k.float() + 0.5) * self.voxel_size,
             ], dim=1)
 
-        
+            # ---- signed distance along ray ----
             cam_origin = T_cw[:3, 3]
 
             ray_dir = pc_world - cam_origin
@@ -208,7 +208,7 @@ class SDFVolume:
             mu = 3.0 * self.voxel_size
             phi = torch.clamp(sdf / mu, -1.0, 1.0)
 
-
+            # ---- TSDF fusion ----
             w_old = self.weight[i, j, k]
             t_old = self.tsdf[i, j, k]
 
@@ -250,7 +250,7 @@ class SDFVolume:
 
 
       def query(self, points):
-            if not isinstance(points, torch.Tensor):
+            if points.dtype == 'np.ndarray':
                   points = torch.from_numpy(points)
             p = points.to(self.device)
             idx =  self.world2grid(p)
@@ -272,7 +272,7 @@ class SDFVolume:
 
       def save_esdf_slices(self, axes = 'z'):
 
-            os.makedirs(self.sdf_cfg.shelf_env.slice_dir, exist_ok = True)
+            os.makedirs(self.sdf_cfg.testbed.slice_dir, exist_ok = True)
             if axes == "z":
                   n = self.Nz
                   s1, s2 = 'X', 'Y'
@@ -292,7 +292,7 @@ class SDFVolume:
                   plt.xlabel(f"{s1} index")
                   plt.ylabel(f"{s2} index")
                   plt.savefig(
-                        os.path.join(self.sdf_cfg.shelf_env.slice_dir, f"esdf_{s1+s2}_z{i:03d}.png"),
+                        os.path.join(self.sdf_cfg.testbed.slice_dir, f"esdf_{s1+s2}_z{i:03d}.png"),
                         dpi = 300,
                         bbox_inches = "tight"
                   )

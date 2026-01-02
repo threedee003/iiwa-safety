@@ -22,12 +22,15 @@ def run():
             seg_map1 = scene.get_segmentation_map(scene.camera_handles[1])
             t0, t1 = scene.camera_transforms[0], scene.camera_transforms[1]
             seg_map0 = scene.get_segmentation_map(scene.camera_handles[0])
+            
+            # scene.sdf.integrate(d1, seg_map1, t1)
             # scene.show_seg_fast(seg_map)
             t += 1
-            if t == 10:
+            if t < 10:
 
                   # scene.sdf.integrate(d1, seg_map1, t1)
-                  scene.sdf.integrate(d0, seg_map0, t0)
+                  # scene.sdf.integrate(d0, seg_map0, t0)
+                  scene.sdf.integrate(d1, seg_map1, t1)
             if t == 20:
                   scene.sdf.save_esdf_slices(axes='z')
            

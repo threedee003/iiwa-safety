@@ -32,15 +32,15 @@ def run():
             # if t == 20:
             #       scene.sdf.save_esdf_slices()
             #       # print(np.unique(seg_map))
-            # if t > 10.:
+            if t > 10.:
 
-            #       Image.fromarray(x[:,:,:3], mode="RGB").save('left_cam.png')
-            #       plt.imshow(d, cmap='jet', vmin=0, vmax=3.0)  # 3m max range
-            #       plt.colorbar(label="Depth (m)")
-            #       plt.axis('off')
-            #       plt.savefig("depth_heatmap.png", dpi=300, bbox_inches='tight', pad_inches=0)
-            #       plt.close()
-            #       break
+                  Image.fromarray(x1[:,:,:3], mode="RGB").save('left_cam.png')
+                  plt.imshow(d1, cmap='jet', vmin=0, vmax=3.0)  # 3m max range
+                  plt.colorbar(label="Depth (m)")
+                  plt.axis('off')
+                  plt.savefig("depth_heatmap.png", dpi=300, bbox_inches='tight', pad_inches=0)
+                  plt.close()
+                  break
       # scene.visualise_mesh()
       scene.__del__()
 
