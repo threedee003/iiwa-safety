@@ -129,10 +129,11 @@ class iiwaTestBed(iiwaScene):
 
 
 
-      def show_seg_fast(self,seg_map):
+      def show_seg_fast(self,seg_map, legend = False):
             plt.figure(figsize=(8,6))
             plt.imshow(seg_map, cmap="tab20")   # quick categorical colormap
-            plt.title("Segmentation map (IDs)")
-            plt.colorbar(label="seg id")
+            # plt.title("Segmentation map (IDs)")
+            if legend:
+                  plt.colorbar(label="seg id")
             plt.axis("off")
             plt.show()
