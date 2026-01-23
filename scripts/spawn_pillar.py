@@ -1,5 +1,5 @@
-from workspace.iiwa_ws import iiwaScene
-from workspace.iiwa_shelf_env import ShelfEnv
+# from workspace.iiwa_ws import iiwaScene
+# from workspace.iiwa_shelf_env import ShelfEnv
 from workspace.iiwa_pillar_env import PillarEnv
 from isaacgym import gymapi
 from PIL import Image
@@ -26,13 +26,13 @@ def run():
             # scene.sdf.integrate(d1, seg_map1, t1)
             # scene.show_seg_fast(seg_map1)
 
-            t += 1
-            if t > 40:
+            # t += 1
+            # if t > 40:
       
-                  seg_map1 = (seg_map1 * 255)
-                  seg = np.array(seg_map1, dtype = np.uint8)
-                  cv2.imwrite('segmentation.png', seg)
-                  break
+            #       seg_map1 = (seg_map1 * 255)
+            #       seg = np.array(seg_map1, dtype = np.uint8)
+            #       cv2.imwrite('segmentation.png', seg)
+            #       break
             # if t < 10:
 
             #       # scene.sdf.integrate(d1, seg_map1, t1)

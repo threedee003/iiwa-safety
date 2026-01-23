@@ -8,8 +8,8 @@ class MPPICfg:
             horizon = 10
             terminal_state_cost = False
             lambda_ = 0.02
-            u_min = []
-            u_max = []
+            u_min = 7*[-1.]
+            u_max = 7*[1.]
             u_scale = 1.
             u_per_command = 1
             step_dependent_dynamics = False
@@ -21,8 +21,8 @@ class MPPICfg:
 
       class dynamics_param:
             pass
+      
 
 
       class device_params:
             device = 'cuda'
-            
